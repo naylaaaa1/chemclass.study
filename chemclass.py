@@ -730,5 +730,5 @@ elif selected_menu == "Indikator asam dan basa":
                 <b>Ionisasi Disosiasi:</b> <code>{selected_chem['dissociation']}</code><br/>
                 <b>Kategori Kelas:</b> {selected_chem['category']}
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
