@@ -686,8 +686,8 @@ elif selected_menu == "🧪 Simulasi Indikator":
         # Metrik bawah beaker
         m1, m2, m3 = st.columns(3)
         m1.metric("Klasifikasi", kls)
-        m2.metric("[H⁺] mol/L",  f"{H_conc:.2f}")
-        m3.metric("[OH⁻] mol/L", f"{OH_conc:.2f}")
+        m2.metric("[H⁺] mol/L",  f"{H_conc:.3f}")
+        m3.metric("[OH⁻] mol/L", f"{OH_conc:.3f}")
 
     # Tabel semua indikator
     with st.expander("📋 Status Semua Indikator pada pH ini"):
