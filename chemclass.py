@@ -900,6 +900,31 @@ elif selected_menu == "🧮 Kalkulator pH":
                     
                 pH_eq = 7 + 0.5 * (-math.log10(Ka)) - 0.5 * (-math.log10(Kb))
                 rumus_ph = "Hidrolisis Total: pH = 7 + ½(pKa - pKb)"
+            
+            # Tampilan Hasil UI
+            st.markdown(f"""
+            <div style="background:rgba(0,0,0,0.2); border-radius:16px; padding:1.5rem; text-align:center; margin-top:1rem; border:2px solid rgba(124,58,237,0.4);">
+              <div class="mono" style="color:#94a3b8; margin-bottom:8px;">
+                V₂ = (n₁ × M₁ × V₁) / (n₂ × M₂) = ({n1} × {M1} × {V1}) / ({n2} × {M2})
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; color:#a78bfa;">{V2_eq:.2f} mL</div>
+              <div style="color:#a78bfa; font-weight:600; margin-top:4px;">
+                Volume Titran yang Dibutuhkan (V₂)
+              </div>
+              <hr style="border-color:rgba(124,58,237,0.2); margin: 15px 0;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700; color:{klasifikasi(pH_eq)[1]};">
+                pH Titik Ekuivalen ≈ {pH_eq:.2f}
+              </div>
+              <div class="mono" style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">
+                {rumus_ph}
+              </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            r3, r4, r5 = st.columns(3)
+            r3.metric("Mol Ekuivalen Bereaksi", f"{mol_eq:.4f} mol")
+            r4.metric("Valensi Analit (n₁)", f"{n1} eq/mol")
+            r5.metric("Valensi Titran (n₂)", f"{n2} eq/mol")
 
 
 # ─────────────────────────────────────────────────────────────────────
