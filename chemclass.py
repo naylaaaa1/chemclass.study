@@ -789,10 +789,10 @@ elif selected_menu == "🧮 Kalkulator pH":
                                   help="CH₃COOH=4.74 | H₂CO₃=6.35 | NH₄⁺=9.25 | H₂PO₄⁻=7.20")
         with b2:
             c_asam = st.number_input("[HA] (mol/L):", value=0.10, step=0.01,
-                                     min_value=0.001, format="%.3f")
+                                     min_value=0.001, format="%.4f")
         with b3:
             c_garam = st.number_input("[A⁻] (mol/L):", value=0.10, step=0.01,
-                                      min_value=0.001, format="%.3f")
+                                      min_value=0.001, format="%.4f")
 
         rasio = c_garam / c_asam
         ph_buf = round(max(0, min(14, pKa + math.log10(rasio))), 2)
