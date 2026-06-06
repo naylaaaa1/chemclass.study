@@ -153,6 +153,79 @@ CHEMICALS = [
     {"name":"Na₂S₂O₃ (Nat. Tiosulfat)", "formula":"Na₂S₂O₃",    "pH":7.0,  "type":"netral", "cat":"Iodometri",     "desc":"Titran iodometri (Hiposulfit)",    "dis":"Na₂S₂O₃ → 2Na⁺ + S₂O₃²⁻"},
 ]
 
+# ─────────────────────────────────────────────────────────────────────
+# DATA: DATABASE LARUTAN KALKULATOR pH (60 Jenis Larutan)
+# ─────────────────────────────────────────────────────────────────────
+DATABASE_LARUTAN = {
+    # --- ASAM KUAT ---
+    "Asam Klorida (HCl) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
+    "Asam Sulfat (H₂SO₄) - Asam Kuat (Valensi 2)": {"jenis": "asam_kuat", "valensi": 2},
+    "Asam Nitrat (HNO₃) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
+    "Asam Bromida (HBr) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
+    "Asam Iodida (HI) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
+    "Asam Perklorat (HClO₄) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
+    "Asam Klorat (HClO₃) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
+
+    # --- BASA KUAT ---
+    "Natrium Hidroksida (NaOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
+    "Kalium Hidroksida (KOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
+    "Litium Hidroksida (LiOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
+    "Rubidium Hidroksida (RbOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
+    "Sesium Hidroksida (CsOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
+    "Barium Hidroksida (Ba(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
+    "Kalsium Hidroksida (Ca(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
+    "Stronsium Hidroksida (Sr(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
+
+    # --- ASAM LEMAH ---
+    "Asam Asetat (CH₃COOH) Ka=1.8×10⁻⁵": {"jenis": "asam_lemah", "K": 1.8e-5},
+    "Asam Format (HCOOH) Ka=1.8×10⁻⁴": {"jenis": "asam_lemah", "K": 1.8e-4},
+    "Asam Sianida (HCN) Ka=4.9×10⁻¹⁰": {"jenis": "asam_lemah", "K": 4.9e-10},
+    "Asam Fluorida (HF) Ka=6.8×10⁻⁴": {"jenis": "asam_lemah", "K": 6.8e-4},
+    "Asam Nitrit (HNO₂) Ka=4.5×10⁻⁴": {"jenis": "asam_lemah", "K": 4.5e-4},
+    "Asam Hipoklorit (HClO) Ka=2.9×10⁻⁸": {"jenis": "asam_lemah", "K": 2.9e-8},
+    "Asam Klorit (HClO₂) Ka=1.1×10⁻²": {"jenis": "asam_lemah", "K": 1.1e-2},
+    "Asam Karbonat (H₂CO₃) Ka=4.3×10⁻⁷": {"jenis": "asam_lemah", "K": 4.3e-7},
+    "Asam Sulfit (H₂SO₃) Ka=1.5×10⁻²": {"jenis": "asam_lemah", "K": 1.5e-2},
+    "Asam Sulfida (H₂S) Ka=8.9×10⁻⁸": {"jenis": "asam_lemah", "K": 8.9e-8},
+    "Asam Fosfat (H₃PO₄) Ka=7.5×10⁻³": {"jenis": "asam_lemah", "K": 7.5e-3},
+    "Asam Benzoat (C₆H₅COOH) Ka=6.5×10⁻⁵": {"jenis": "asam_lemah", "K": 6.5e-5},
+    "Fenol (C₆H₅OH) Ka=1.0×10⁻¹⁰": {"jenis": "asam_lemah", "K": 1.0e-10},
+    "Asam Propanoat (C₂H₅COOH) Ka=1.3×10⁻⁵": {"jenis": "asam_lemah", "K": 1.3e-5},
+    "Asam Butanoat (C₃H₇COOH) Ka=1.5×10⁻⁵": {"jenis": "asam_lemah", "K": 1.5e-5},
+    "Asam Laktat (C₃H₆O₃) Ka=1.4×10⁻⁴": {"jenis": "asam_lemah", "K": 1.4e-4},
+    "Asam Askorbat / Vit C (C₆H₈O₆) Ka=8.0×10⁻⁵": {"jenis": "asam_lemah", "K": 8.0e-5},
+    "Asam Tartarat (C₄H₆O₆) Ka=1.0×10⁻³": {"jenis": "asam_lemah", "K": 1.0e-3},
+    "Asam Sitrat (C₆H₈O₇) Ka=7.4×10⁻⁴": {"jenis": "asam_lemah", "K": 7.4e-4},
+    "Asam Oksalat (H₂C₂O₄) Ka=5.9×10⁻²": {"jenis": "asam_lemah", "K": 5.9e-2},
+    "Asam Ftalat (C₈H₆O₄) Ka=1.1×10⁻³": {"jenis": "asam_lemah", "K": 1.1e-3},
+    "Asam Salisilat (C₇H₆O₃) Ka=1.0×10⁻³": {"jenis": "asam_lemah", "K": 1.0e-3},
+    "Asam Borat (H₃BO₃) Ka=5.8×10⁻¹⁰": {"jenis": "asam_lemah", "K": 5.8e-10},
+    "Asam Kloroasetat (CH₂ClCOOH) Ka=1.4×10⁻³": {"jenis": "asam_lemah", "K": 1.4e-3},
+    "Asam Dikloroasetat (CHCl₂COOH) Ka=5.0×10⁻²": {"jenis": "asam_lemah", "K": 5.0e-2},
+    "Asam Bromoasetat (CH₂BrCOOH) Ka=1.3×10⁻³": {"jenis": "asam_lemah", "K": 1.3e-3},
+    "Asam Arsenat (H₃AsO₄) Ka=5.5×10⁻³": {"jenis": "asam_lemah", "K": 5.5e-3},
+    "Asam Arsenit (H₃AsO₃) Ka=5.1×10⁻¹⁰": {"jenis": "asam_lemah", "K": 5.1e-10},
+    "Asam Sianat (HOCN) Ka=3.5×10⁻⁴": {"jenis": "asam_lemah", "K": 3.5e-4},
+    "Asam Urat (C₅H₄N₄O₃) Ka=4.0×10⁻⁶": {"jenis": "asam_lemah", "K": 4.0e-6},
+
+    # --- BASA LEMAH ---
+    "Amonia (NH₃) Kb=1.8×10⁻⁵": {"jenis": "basa_lemah", "K": 1.8e-5},
+    "Metilamin (CH₃NH₂) Kb=4.4×10⁻⁴": {"jenis": "basa_lemah", "K": 4.4e-4},
+    "Etilamin (C₂H₅NH₂) Kb=5.6×10⁻⁴": {"jenis": "basa_lemah", "K": 5.6e-4},
+    "Propilamin (C₃H₇NH₂) Kb=3.5×10⁻⁴": {"jenis": "basa_lemah", "K": 3.5e-4},
+    "Butilamin (C₄H₉NH₂) Kb=4.0×10⁻⁴": {"jenis": "basa_lemah", "K": 4.0e-4},
+    "Dimetilamin ((CH₃)₂NH) Kb=5.4×10⁻⁴": {"jenis": "basa_lemah", "K": 5.4e-4},
+    "Dietilamin ((C₂H₅)₂NH) Kb=8.6×10⁻⁴": {"jenis": "basa_lemah", "K": 8.6e-4},
+    "Trimetilamin ((CH₃)₃N) Kb=6.3×10⁻⁵": {"jenis": "basa_lemah", "K": 6.3e-5},
+    "Trietilamin ((C₂H₅)₃N) Kb=5.2×10⁻⁴": {"jenis": "basa_lemah", "K": 5.2e-4},
+    "Anilin (C₆H₅NH₂) Kb=3.8×10⁻¹⁰": {"jenis": "basa_lemah", "K": 3.8e-10},
+    "Piridin (C₅H₅N) Kb=1.7×10⁻⁹": {"jenis": "basa_lemah", "K": 1.7e-9},
+    "Hidrazin (N₂H₄) Kb=1.3×10⁻⁶": {"jenis": "basa_lemah", "K": 1.3e-6},
+    "Hidroksilamin (NH₂OH) Kb=1.1×10⁻⁸": {"jenis": "basa_lemah", "K": 1.1e-8},
+    "Benzilamin (C₆H₅CH₂NH₂) Kb=2.1×10⁻⁵": {"jenis": "basa_lemah", "K": 2.1e-5},
+    "Etilendiamin (C₂H₈N₂) Kb=8.5×10⁻⁵": {"jenis": "basa_lemah", "K": 8.5e-5},
+}
+
 MUSIK = {
     "🎵 Lo-Fi Chill": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
     "🌊 Ambient Nature": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
@@ -189,29 +262,40 @@ def klasifikasi(ph: float):
     if ph > 7: return "BASA", "#3b82f6"
     return "NETRAL", "#22c55e"
 
-def hitung_ph(jenis: str, konsentrasi: float) -> tuple[float, str]:
+def hitung_ph(data_larutan: dict, konsentrasi: float) -> tuple[float, str]:
     c = max(konsentrasi, 1e-15)
-    if jenis == "Asam Kuat (HCl, H₂SO₄, HNO₃)":
-        ph = -math.log10(c)
-        rumus = f"pH = −log[H⁺] = −log({c:.4f}) = **{ph:.2f}**"
-    elif jenis == "Basa Kuat (NaOH, KOH)":
-        poh = -math.log10(c)
+    jenis = data_larutan["jenis"]
+
+    if jenis == "asam_kuat":
+        valensi = data_larutan["valensi"]
+        H = valensi * c
+        ph = -math.log10(H)
+        rumus = f"[H⁺] = Valensi × C <br> [H⁺] = {valensi} × {c:.4f} = {H:.4e} <br> pH = −log[H⁺] = **{ph:.2f}**"
+        
+    elif jenis == "basa_kuat":
+        valensi = data_larutan["valensi"]
+        OH = valensi * c
+        poh = -math.log10(OH)
         ph = 14 - poh
-        rumus = f"pOH = −log[OH⁻] = −log({c:.4f}) = {poh:.2f} → pH = 14 − {poh:.2f} = **{ph:.2f}**"
-    elif jenis == "Asam Lemah (CH₃COOH) Ka=1.8×10⁻⁵":
-        Ka = 1.8e-5
+        rumus = f"[OH⁻] = Valensi × C = {OH:.4e} <br> pOH = −log[OH⁻] = {poh:.2f} <br> pH = 14 − {poh:.2f} = **{ph:.2f}**"
+        
+    elif jenis == "asam_lemah":
+        Ka = data_larutan["K"]
         H = math.sqrt(Ka * c)
         ph = -math.log10(H)
-        rumus = f"[H⁺] = √(Ka×C) = √(1.8×10⁻⁵ × {c:.4f}) = {H:.2e} → pH = **{ph:.2f}**"
-    elif jenis == "Basa Lemah (NH₃) Kb=1.8×10⁻⁵":
-        Kb = 1.8e-5
+        rumus = f"[H⁺] = √(Ka × C) <br> [H⁺] = √({Ka:.1e} × {c:.4f}) = {H:.2e} <br> pH = −log[H⁺] = **{ph:.2f}**"
+        
+    elif jenis == "basa_lemah":
+        Kb = data_larutan["K"]
         OH = math.sqrt(Kb * c)
         poh = -math.log10(OH)
         ph = 14 - poh
-        rumus = f"[OH⁻] = √(Kb×C) = {OH:.2e} → pOH = {poh:.2f} → pH = **{ph:.2f}**"
+        rumus = f"[OH⁻] = √(Kb × C) <br> [OH⁻] = √({Kb:.1e} × {c:.4f}) = {OH:.2e} <br> pOH = {poh:.2f} <br> pH = 14 − {poh:.2f} = **{ph:.2f}**"
+        
     else:
         ph = 7.0
         rumus = "pH = 7.00 (larutan netral)"
+        
     return round(max(0.0, min(14.0, ph)), 2), rumus
 
 def add_task(name):
@@ -629,82 +713,20 @@ elif selected_menu == "🧮 Kalkulator pH":
 
     tab1, tab2, tab3 = st.tabs(["⚗️ Hitung dari Konsentrasi", "📊 Buffer Henderson-Hasselbalch", "🧫 Titrasi Asam-Basa"])
 
-    # ── Tab 1: Dari Konsentrasi ──────────────────────────────────────
+# ── Tab 1: Dari Konsentrasi ──────────────────────────────────────
     with tab1:
         k1, k2 = st.columns(2)
         with k1:
-            jenis_lar = st.selectbox("Jenis Larutan:", [
-    "Asam Klorida (HCl) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
-    "Asam Sulfat (H₂SO₄) - Asam Kuat (Valensi 2)": {"jenis": "asam_kuat", "valensi": 2},
-    "Asam Nitrat (HNO₃) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
-    "Asam Bromida (HBr) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
-    "Asam Iodida (HI) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
-    "Asam Perklorat (HClO₄) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
-    "Asam Klorat (HClO₃) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
-
-    # --- BASA KUAT ---
-    "Natrium Hidroksida (NaOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
-    "Kalium Hidroksida (KOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
-    "Litium Hidroksida (LiOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
-    "Rubidium Hidroksida (RbOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
-    "Sesium Hidroksida (CsOH) - Basa Kuat (Valensi 1)": {"jenis": "basa_kuat", "valensi": 1},
-    "Barium Hidroksida (Ba(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
-    "Kalsium Hidroksida (Ca(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
-    "Stronsium Hidroksida (Sr(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
-
-    # --- ASAM LEMAH ---
-    "Asam Asetat (CH₃COOH) Ka=1.8×10⁻⁵": {"jenis": "asam_lemah", "K": 1.8e-5},
-    "Asam Format (HCOOH) Ka=1.8×10⁻⁴": {"jenis": "asam_lemah", "K": 1.8e-4},
-    "Asam Sianida (HCN) Ka=4.9×10⁻¹⁰": {"jenis": "asam_lemah", "K": 4.9e-10},
-    "Asam Fluorida (HF) Ka=6.8×10⁻⁴": {"jenis": "asam_lemah", "K": 6.8e-4},
-    "Asam Nitrit (HNO₂) Ka=4.5×10⁻⁴": {"jenis": "asam_lemah", "K": 4.5e-4},
-    "Asam Hipoklorit (HClO) Ka=2.9×10⁻⁸": {"jenis": "asam_lemah", "K": 2.9e-8},
-    "Asam Klorit (HClO₂) Ka=1.1×10⁻²": {"jenis": "asam_lemah", "K": 1.1e-2},
-    "Asam Karbonat (H₂CO₃) Ka=4.3×10⁻⁷": {"jenis": "asam_lemah", "K": 4.3e-7},
-    "Asam Sulfit (H₂SO₃) Ka=1.5×10⁻²": {"jenis": "asam_lemah", "K": 1.5e-2},
-    "Asam Sulfida (H₂S) Ka=8.9×10⁻⁸": {"jenis": "asam_lemah", "K": 8.9e-8},
-    "Asam Fosfat (H₃PO₄) Ka=7.5×10⁻³": {"jenis": "asam_lemah", "K": 7.5e-3},
-    "Asam Benzoat (C₆H₅COOH) Ka=6.5×10⁻⁵": {"jenis": "asam_lemah", "K": 6.5e-5},
-    "Fenol (C₆H₅OH) Ka=1.0×10⁻¹⁰": {"jenis": "asam_lemah", "K": 1.0e-10},
-    "Asam Propanoat (C₂H₅COOH) Ka=1.3×10⁻⁵": {"jenis": "asam_lemah", "K": 1.3e-5},
-    "Asam Butanoat (C₃H₇COOH) Ka=1.5×10⁻⁵": {"jenis": "asam_lemah", "K": 1.5e-5},
-    "Asam Laktat (C₃H₆O₃) Ka=1.4×10⁻⁴": {"jenis": "asam_lemah", "K": 1.4e-4},
-    "Asam Askorbat / Vit C (C₆H₈O₆) Ka=8.0×10⁻⁵": {"jenis": "asam_lemah", "K": 8.0e-5},
-    "Asam Tartarat (C₄H₆O₆) Ka=1.0×10⁻³": {"jenis": "asam_lemah", "K": 1.0e-3},
-    "Asam Sitrat (C₆H₈O₇) Ka=7.4×10⁻⁴": {"jenis": "asam_lemah", "K": 7.4e-4},
-    "Asam Oksalat (H₂C₂O₄) Ka=5.9×10⁻²": {"jenis": "asam_lemah", "K": 5.9e-2},
-    "Asam Ftalat (C₈H₆O₄) Ka=1.1×10⁻³": {"jenis": "asam_lemah", "K": 1.1e-3},
-    "Asam Salisilat (C₇H₆O₃) Ka=1.0×10⁻³": {"jenis": "asam_lemah", "K": 1.0e-3},
-    "Asam Borat (H₃BO₃) Ka=5.8×10⁻¹⁰": {"jenis": "asam_lemah", "K": 5.8e-10},
-    "Asam Kloroasetat (CH₂ClCOOH) Ka=1.4×10⁻³": {"jenis": "asam_lemah", "K": 1.4e-3},
-    "Asam Dikloroasetat (CHCl₂COOH) Ka=5.0×10⁻²": {"jenis": "asam_lemah", "K": 5.0e-2},
-    "Asam Bromoasetat (CH₂BrCOOH) Ka=1.3×10⁻³": {"jenis": "asam_lemah", "K": 1.3e-3},
-    "Asam Arsenat (H₃AsO₄) Ka=5.5×10⁻³": {"jenis": "asam_lemah", "K": 5.5e-3},
-    "Asam Arsenit (H₃AsO₃) Ka=5.1×10⁻¹⁰": {"jenis": "asam_lemah", "K": 5.1e-10},
-    "Asam Sianat (HOCN) Ka=3.5×10⁻⁴": {"jenis": "asam_lemah", "K": 3.5e-4},
-    "Asam Urat (C₅H₄N₄O₃) Ka=4.0×10⁻⁶": {"jenis": "asam_lemah", "K": 4.0e-6},
-
-    # --- BASA LEMAH ---
-    "Amonia (NH₃) Kb=1.8×10⁻⁵": {"jenis": "basa_lemah", "K": 1.8e-5},
-    "Metilamin (CH₃NH₂) Kb=4.4×10⁻⁴": {"jenis": "basa_lemah", "K": 4.4e-4},
-    "Etilamin (C₂H₅NH₂) Kb=5.6×10⁻⁴": {"jenis": "basa_lemah", "K": 5.6e-4},
-    "Propilamin (C₃H₇NH₂) Kb=3.5×10⁻⁴": {"jenis": "basa_lemah", "K": 3.5e-4},
-    "Butilamin (C₄H₉NH₂) Kb=4.0×10⁻⁴": {"jenis": "basa_lemah", "K": 4.0e-4},
-    "Dimetilamin ((CH₃)₂NH) Kb=5.4×10⁻⁴": {"jenis": "basa_lemah", "K": 5.4e-4},
-    "Dietilamin ((C₂H₅)₂NH) Kb=8.6×10⁻⁴": {"jenis": "basa_lemah", "K": 8.6e-4},
-    "Trimetilamin ((CH₃)₃N) Kb=6.3×10⁻⁵": {"jenis": "basa_lemah", "K": 6.3e-5},
-    "Trietilamin ((C₂H₅)₃N) Kb=5.2×10⁻⁴": {"jenis": "basa_lemah", "K": 5.2e-4},
-    "Anilin (C₆H₅NH₂) Kb=3.8×10⁻¹⁰": {"jenis": "basa_lemah", "K": 3.8e-10},
-    "Piridin (C₅H₅N) Kb=1.7×10⁻⁹": {"jenis": "basa_lemah", "K": 1.7e-9},
-    "Hidrazin (N₂H₄) Kb=1.3×10⁻⁶": {"jenis": "basa_lemah", "K": 1.3e-6},
-    "Hidroksilamin (NH₂OH) Kb=1.1×10⁻⁸": {"jenis": "basa_lemah", "K": 1.1e-8},
-    "Benzilamin (C₆H₅CH₂NH₂) Kb=2.1×10⁻⁵": {"jenis": "basa_lemah", "K": 2.1e-5},
-    "Etilendiamin (C₂H₈N₂) Kb=8.5×10⁻⁵": {"jenis": "basa_lemah", "K": 8.5e-5},
-            ])
+            # Dropdown kini mengambil list dari DATABASE_LARUTAN
+            nama_larutan = st.selectbox("Jenis Larutan:", list(DATABASE_LARUTAN.keys()))
             konsentrasi = st.number_input("Konsentrasi (mol/L):", min_value=0.0001,
                                           max_value=10.0, value=0.1, step=0.01, format="%.4f")
 
-        ph_hasil, rumus_str = hitung_ph(jenis_lar, konsentrasi)
+        # Mengambil dictionary data yang spesifik berdasarkan nama yang dipilih
+        data_terpilih = DATABASE_LARUTAN[nama_larutan]
+        
+        # Eksekusi fungsi pH dinamis
+        ph_hasil, rumus_str = hitung_ph(data_terpilih, konsentrasi)
         kls2, kls2_clr = klasifikasi(ph_hasil)
         H2  = 10 ** (-ph_hasil)
         OH2 = 10 ** (-(14 - ph_hasil))
