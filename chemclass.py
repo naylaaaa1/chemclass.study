@@ -634,7 +634,6 @@ elif selected_menu == "🧮 Kalkulator pH":
         k1, k2 = st.columns(2)
         with k1:
             jenis_lar = st.selectbox("Jenis Larutan:", [
-    # --- ASAM KUAT ---
     "Asam Klorida (HCl) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
     "Asam Sulfat (H₂SO₄) - Asam Kuat (Valensi 2)": {"jenis": "asam_kuat", "valensi": 2},
     "Asam Nitrat (HNO₃) - Asam Kuat (Valensi 1)": {"jenis": "asam_kuat", "valensi": 1},
