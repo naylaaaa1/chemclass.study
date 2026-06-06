@@ -832,12 +832,12 @@ elif selected_menu == "🧮 Kalkulator pH":
         with t1:
             st.markdown("**Analit (Larutan di Erlenmeyer)**")
             analit_name = st.selectbox("Jenis Analit:", list(DATABASE_LARUTAN.keys()), key="analit_sel")
-            M1 = st.number_input("Molaritas Analit (M₁):", value=0.100, step=0.01, min_value=0.001, format="%.3f")
+            M1 = st.number_input("Molaritas Analit (M₁):", value=0.100, step=0.01, min_value=0.001, format="%.4f")
             V1 = st.number_input("Volume Analit (V₁ mL):", value=25.0, step=1.0, min_value=0.1, format="%.1f")
         with t2:
             st.markdown("**Titran (Larutan di Buret)**")
             titran_name = st.selectbox("Jenis Titran:", list(DATABASE_LARUTAN.keys()), key="titran_sel")
-            M2 = st.number_input("Molaritas Titran (M₂):", value=0.100, step=0.01, min_value=0.001, format="%.3f")
+            M2 = st.number_input("Molaritas Titran (M₂):", value=0.100, step=0.01, min_value=0.001, format="%.4f")
 
         data_analit = DATABASE_LARUTAN[analit_name]
         data_titran = DATABASE_LARUTAN[titran_name]
