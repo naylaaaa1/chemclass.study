@@ -751,8 +751,8 @@ elif selected_menu == "🧮 Kalkulator pH":
         """, unsafe_allow_html=True)
 
         r1, r2 = st.columns(2)
-        r1.metric("[H⁺]",  f"{H2:.3e} mol/L")
-        r2.metric("[OH⁻]", f"{OH2:.3e} mol/L")
+        r1.metric("[H⁺]",  f"{H2:.4f} mol/L")
+        r2.metric("[OH⁻]", f"{OH2:.4f} mol/L")
 
         # Visualisasi mini semua indikator
         st.markdown("---")
@@ -870,24 +870,24 @@ elif selected_menu == "🧮 Kalkulator pH":
                     Ka = data_analit["K"]
                     OH = math.sqrt((Kw / Ka) * Cs)
                     pH_eq = 14 - (-math.log10(OH))
-                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.2e} M"
+                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.4f} M"
                 else: # Basa Lemah + Asam Kuat
                     Kb = data_analit["K"]
                     H = math.sqrt((Kw / Kb) * Cs)
                     pH_eq = -math.log10(H)
-                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.2e} M"
+                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.4f} M"
                     
             elif "kuat" in data_analit["jenis"] and "lemah" in data_titran["jenis"]:
                 if is_titran_asam: # Basa Kuat + Asam Lemah
                     Ka = data_titran["K"]
                     OH = math.sqrt((Kw / Ka) * Cs)
                     pH_eq = 14 - (-math.log10(OH))
-                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.2e} M"
+                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.4f} M"
                 else: # Asam Kuat + Basa Lemah
                     Kb = data_titran["K"]
                     H = math.sqrt((Kw / Kb) * Cs)
                     pH_eq = -math.log10(H)
-                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.2e} M"
+                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.4f} M"
                     
             else:
                 # Lemah + Lemah (Logika disederhanakan agar tidak error)
