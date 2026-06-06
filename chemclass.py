@@ -870,24 +870,24 @@ elif selected_menu == "🧮 Kalkulator pH":
                     Ka = data_analit["K"]
                     OH = math.sqrt((Kw / Ka) * Cs)
                     pH_eq = 14 - (-math.log10(OH))
-                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.13f} M"
+                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.7f} M"
                 else: # Basa Lemah + Asam Kuat
                     Kb = data_analit["K"]
                     H = math.sqrt((Kw / Kb) * Cs)
                     pH_eq = -math.log10(H)
-                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.13f} M"
+                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.7f} M"
                     
             elif "kuat" in data_analit["jenis"] and "lemah" in data_titran["jenis"]:
                 if is_titran_asam: # Basa Kuat + Asam Lemah
                     Ka = data_titran["K"]
                     OH = math.sqrt((Kw / Ka) * Cs)
                     pH_eq = 14 - (-math.log10(OH))
-                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.13f} M"
+                    rumus_ph = f"Hidrolisis Basa: [OH⁻] = √((Kw / Ka) × M_garam) = {OH:.7f} M"
                 else: # Asam Kuat + Basa Lemah
                     Kb = data_titran["K"]
                     H = math.sqrt((Kw / Kb) * Cs)
                     pH_eq = -math.log10(H)
-                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.13f} M"
+                    rumus_ph = f"Hidrolisis Asam: [H⁺] = √((Kw / Kb) × M_garam) = {H:.7f} M"
                     
             else:
                 # Lemah + Lemah (Logika disederhanakan agar tidak error)
