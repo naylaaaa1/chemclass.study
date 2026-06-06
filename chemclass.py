@@ -1,5 +1,490 @@
 # =====================================================================
 # 📚 DASHBOARD BELAJAR - KIMIA ASAM BASA
+# Versi: 2.1 (Fixed Widget Keys, Auto-Rerun & Enhanced Timer)
+# =====================================================================
+
+import streamlit as st
+import time
+import math
+import uuid
+import pandas as pd
+from datetime import datetime
+
+# ─────────────────────────────────────────────────────────────────────
+# FUNGSI RERUN AMAN (Kompatibel untuk semua versi Streamlit)
+# ─────────────────────────────────────────────────────────────────────
+def safe_rerun():
+    if hasattr(st, "rerun"):
+        st.rerun()
+    else:
+        st.experimental_rerun()
+
+# ─────────────────────────────────────────────────────────────────────
+# KONFIGURASI HALAMAN  ← hanya boleh dipanggil SEKALI di paling atas
+# ─────────────────────────────────────────────────────────────────────
+st.set_page_config(
+    page_title="Dashboard Belajar Kimia",
+    page_icon="🧪",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# ─────────────────────────────────────────────────────────────────────
+# SESSION STATE  ← inisialisasi sekali
+# ─────────────────────────────────────────────────────────────────────
+for key, default in {
+    "theme": "Dark",
+    "tasks": [],
+    "timer_running": False,
+    "time_left": 25 * 60,
+    "selected_menu": "🏠 Dashboard",
+    "new_task_input": "", # State untuk mereset text input
+}.items():
+    if key not in st.session_state:
+        st.session_state[key] = default
+
+# ─────────────────────────────────────────────────────────────────────
+# DATA: INDIKATOR
+# ─────────────────────────────────────────────────────────────────────
+INDICATORS = {
+    "lakmus":    {"name": "Kertas Lakmus",         "range": (4.5, 8.3),  "low": "#ef4444", "low_lbl": "MERAH – Asam",        "high": "#3b82f6", "high_lbl": "BIRU – Basa",         "mid": "#a855f7", "mid_lbl": "UNGU – Transisi"},
+    "pp":        {"name": "Fenolftalein (PP)",      "range": (8.2, 10.0), "low": "#f1f5f9", "low_lbl": "TAK BERWARNA – Asam", "high": "#ec4899", "high_lbl": "MERAH MUDA – Basa",   "mid": "#fbcfe8", "mid_lbl": "MERAH MUDA PUCAT"},
+    "btb":       {"name": "Bromothymol Blue (BTB)", "range": (6.0, 7.6),  "low": "#eab308", "low_lbl": "KUNING – Asam",       "high": "#1d4ed8", "high_lbl": "BIRU – Basa",         "mid": "#22c55e", "mid_lbl": "HIJAU – Netral"},
+    "mr":        {"name": "Metil Merah",            "range": (4.4, 6.2),  "low": "#dc2626", "low_lbl": "MERAH – Asam",        "high": "#ca8a04", "high_lbl": "KUNING – Basa",       "mid": "#f97316", "mid_lbl": "JINGGA – Transisi"},
+    "mo":        {"name": "Metil Oranye",           "range": (3.1, 4.4),  "low": "#f97316", "low_lbl": "MERAH-ORANYE – Asam", "high": "#facc15", "high_lbl": "KUNING – Basa",       "mid": "#fb923c", "mid_lbl": "ORANYE – Transisi"},
+    "universal": {"name": "Indikator Universal",    "range": (0.0, 14.0), "low": "#dc2626", "low_lbl": "MERAH – Sangat Asam", "high": "#581c87", "high_lbl": "UNGU – Sangat Basa",  "mid": "#16a34a", "mid_lbl": "HIJAU – Netral"},
+}
+
+# ─────────────────────────────────────────────────────────────────────
+# DATA: ZAT KIMIA (Sample 20 Data untuk keringanan script)
+# ─────────────────────────────────────────────────────────────────────
+CHEMICALS = [
+    {"name":"HCl (Asam Klorida)",       "formula":"HCl",        "pH":1.0,  "type":"asam",   "cat":"Laboratorium",  "desc":"Asam kuat pembersih porselen",     "dis":"HCl → H⁺ + Cl⁻"},
+    {"name":"H₂SO₄ (Asam Sulfat)",      "formula":"H₂SO₄",      "pH":1.5,  "type":"asam",   "cat":"Laboratorium",  "desc":"Air aki kendaraan",                "dis":"H₂SO₄ → 2H⁺ + SO₄²⁻"},
+    {"name":"HNO₃ (Asam Nitrat)",       "formula":"HNO₃",       "pH":1.0,  "type":"asam",   "cat":"Laboratorium",  "desc":"Oksidator kuat, pelarut logam",    "dis":"HNO₃ → H⁺ + NO₃⁻"},
+    {"name":"CH₃COOH (Cuka)",           "formula":"CH₃COOH",    "pH":3.0,  "type":"asam",   "cat":"Sehari-hari",   "desc":"Cuka dapur 5%",                    "dis":"CH₃COOH ⇌ H⁺ + CH₃COO⁻"},
+    {"name":"C₆H₈O₇ (Asam Sitrat)",     "formula":"C₆H₈O₇",     "pH":2.2,  "type":"asam",   "cat":"Sehari-hari",   "desc":"Sari jeruk lemon",                 "dis":"C₆H₈O₇ ⇌ 3H⁺ + C₆H₅O₇³⁻"},
+    {"name":"HF (Asam Fluorida)",       "formula":"HF",         "pH":3.2,  "type":"asam",   "cat":"Laboratorium",  "desc":"Pelarut silika dan kaca",          "dis":"HF ⇌ H⁺ + F⁻"},
+    {"name":"H₂CO₃ (Asam Karbonat)",    "formula":"H₂CO₃",      "pH":4.6,  "type":"asam",   "cat":"Sehari-hari",   "desc":"Soda berkarbonasi",                "dis":"H₂CO₃ ⇌ 2H⁺ + CO₃²⁻"},
+    {"name":"H₂O (Air Murni)",          "formula":"H₂O",        "pH":7.0,  "type":"netral", "cat":"Sehari-hari",   "desc":"Air suling / Aquades",             "dis":"H₂O ⇌ H⁺ + OH⁻"},
+    {"name":"NaCl (Garam Dapur)",       "formula":"NaCl",       "pH":7.0,  "type":"netral", "cat":"Sehari-hari",   "desc":"Garam dapur biasa",                "dis":"NaCl → Na⁺ + Cl⁻"},
+    {"name":"NaHCO₃ (Soda Kue)",        "formula":"NaHCO₃",     "pH":8.3,  "type":"basa",   "cat":"Sehari-hari",   "desc":"Pengembang roti",                  "dis":"NaHCO₃ → Na⁺ + HCO₃⁻"},
+    {"name":"Na₂CO₃ (Soda Abu)",        "formula":"Na₂CO₃",     "pH":11.6, "type":"basa",   "cat":"Standar Primer","desc":"Standarisasi larutan asam",        "dis":"Na₂CO₃ → 2Na⁺ + CO₃²⁻"},
+    {"name":"NH₃ (Amonia)",             "formula":"NH₃",        "pH":11.1, "type":"basa",   "cat":"Laboratorium",  "desc":"Basa lemah berbau tajam",          "dis":"NH₃ + H₂O ⇌ NH₄⁺ + OH⁻"},
+    {"name":"Ca(OH)₂ (Air Kapur)",      "formula":"Ca(OH)₂",    "pH":11.5, "type":"basa",   "cat":"Laboratorium",  "desc":"Air kapur sirih",                  "dis":"Ca(OH)₂ → Ca²⁺ + 2OH⁻"},
+    {"name":"NaOH (Soda Api)",          "formula":"NaOH",       "pH":13.0, "type":"basa",   "cat":"Laboratorium",  "desc":"Basa kuat",                        "dis":"NaOH → Na⁺ + OH⁻"},
+    {"name":"KOH (Kalium Hidroksida)",  "formula":"KOH",        "pH":13.0, "type":"basa",   "cat":"Laboratorium",  "desc":"Basa kuat reaksi penyabunan",      "dis":"KOH → K⁺ + OH⁻"},
+    {"name":"Mg(OH)₂ (Susu Magnesia)",  "formula":"Mg(OH)₂",    "pH":10.5, "type":"basa",   "cat":"Farmasi",       "desc":"Antasida obat maag",               "dis":"Mg(OH)₂ ⇌ Mg²⁺ + 2OH⁻"},
+    {"name":"KMnO₄ (Kalium Perm.)",     "formula":"KMnO₄",      "pH":7.5,  "type":"netral", "cat":"Permanganometri","desc":"Oksidator kuat autoindikator",    "dis":"KMnO₄ → K⁺ + MnO₄⁻"},
+    {"name":"CuSO₄ (Tembaga Sulfat)",   "formula":"CuSO₄",      "pH":4.0,  "type":"asam",   "cat":"Analisis",      "desc":"Reagen biuret untuk protein",      "dis":"CuSO₄ → Cu²⁺ + SO₄²⁻"},
+    {"name":"AgNO₃ (Perak Nitrat)",     "formula":"AgNO₃",      "pH":5.5,  "type":"asam",   "cat":"Argentometri",  "desc":"Titran penentuan klorida",         "dis":"AgNO₃ → Ag⁺ + NO₃⁻"},
+    {"name":"KHP (Standar Primer)",     "formula":"KHC₈H₄O₄",   "pH":4.0,  "type":"asam",   "cat":"Standar Primer","desc":"Standarisasi larutan NaOH",        "dis":"KHC₈H₄O₄ → K⁺ + HC₈H₄O₄⁻"},
+]
+
+MUSIK = {
+    "🎵 Lo-Fi Chill": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "🌊 Ambient Nature": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "🌙 Piano Relaksasi": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    "⚡ Deep Focus": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+    "☕ Coffee Shop": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+}
+
+# ─────────────────────────────────────────────────────────────────────
+# FUNGSI UTILITAS UMUM
+# ─────────────────────────────────────────────────────────────────────
+def warna_indikator(ph: float, ind: dict) -> str:
+    lo, hi = ind["range"]
+    if ind["name"] == "Indikator Universal":
+        if ph < 3:   return "#dc2626"
+        elif ph < 5: return "#f97316"
+        elif ph < 6.5: return "#eab308"
+        elif ph < 7.5: return "#16a34a"
+        elif ph < 9:   return "#0284c7"
+        elif ph < 11:  return "#1d4ed8"
+        else:          return "#581c87"
+    if ph < lo:  return ind["low"]
+    if ph > hi:  return ind["high"]
+    return ind["mid"]
+
+def label_indikator(ph: float, ind: dict) -> str:
+    lo, hi = ind["range"]
+    if ph < lo:  return ind["low_lbl"]
+    if ph > hi:  return ind["high_lbl"]
+    return ind["mid_lbl"]
+
+def klasifikasi(ph: float):
+    if ph < 7: return "ASAM", "#ef4444"
+    if ph > 7: return "BASA", "#3b82f6"
+    return "NETRAL", "#22c55e"
+
+def hitung_ph(jenis: str, konsentrasi: float) -> tuple[float, str]:
+    c = max(konsentrasi, 1e-15)
+    if jenis == "Asam Kuat (HCl, H₂SO₄, HNO₃)":
+        ph = -math.log10(c)
+        rumus = f"pH = −log[H⁺] = −log({c:.4f}) = **{ph:.2f}**"
+    elif jenis == "Basa Kuat (NaOH, KOH)":
+        poh = -math.log10(c)
+        ph = 14 - poh
+        rumus = f"pOH = −log[OH⁻] = −log({c:.4f}) = {poh:.2f} → pH = 14 − {poh:.2f} = **{ph:.2f}**"
+    elif jenis == "Asam Lemah (CH₃COOH) Ka=1.8×10⁻⁵":
+        Ka = 1.8e-5
+        H = math.sqrt(Ka * c)
+        ph = -math.log10(H)
+        rumus = f"[H⁺] = √(Ka×C) = √(1.8×10⁻⁵ × {c:.4f}) = {H:.2e} → pH = **{ph:.2f}**"
+    elif jenis == "Basa Lemah (NH₃) Kb=1.8×10⁻⁵":
+        Kb = 1.8e-5
+        OH = math.sqrt(Kb * c)
+        poh = -math.log10(OH)
+        ph = 14 - poh
+        rumus = f"[OH⁻] = √(Kb×C) = {OH:.2e} → pOH = {poh:.2f} → pH = **{ph:.2f}**"
+    else:
+        ph = 7.0
+        rumus = "pH = 7.00 (larutan netral)"
+    return round(max(0.0, min(14.0, ph)), 2), rumus
+
+# ─────────────────────────────────────────────────────────────────────
+# CSS TEMA
+# ─────────────────────────────────────────────────────────────────────
+def apply_theme():
+    is_dark = st.session_state.theme == "Dark"
+    bg     = "#0f0f1a" if is_dark else "#f0f4f8"
+    sbg    = "#1a1a2e" if is_dark else "#e2e8f0"
+    txt    = "#e2e8f0" if is_dark else "#1e293b"
+    card   = "rgba(255,255,255,0.05)" if is_dark else "rgba(0,0,0,0.04)"
+    border = "rgba(255,255,255,0.1)"  if is_dark else "rgba(0,0,0,0.1)"
+    inp    = "#16213e" if is_dark else "#ffffff"
+    btn    = "#7c3aed" if is_dark else "#3b82f6"
+
+    st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap');
+
+    html, body, [class*="css"] {{ font-family: 'Outfit', sans-serif; }}
+    .stApp {{ background-color: {bg}; }}
+    h1,h2,h3,h4,h5,h6,p,label,span,div {{ color: {txt} !important; }}
+    section[data-testid="stSidebar"] {{ background-color: {sbg}; }}
+    .stTextInput>div>div>input, .stNumberInput>div>div>input {{
+        background-color: {inp} !important; color: {txt} !important;
+        border: 1px solid {border} !important; border-radius: 8px !important;
+    }}
+    .stSelectbox>div>div>div {{ background-color: {inp} !important; color: {txt} !important; }}
+    .stButton>button {{
+        background: linear-gradient(135deg, {btn}, #06b6d4) !important;
+        color: white !important; border: none !important; border-radius: 10px !important;
+        font-family: 'Outfit', sans-serif !important; font-weight: 600 !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+    }}
+    .stButton>button:hover {{ transform: translateY(-2px) !important; box-shadow: 0 6px 20px rgba(124,58,237,0.4) !important; }}
+    .stProgress>div>div>div {{ background: linear-gradient(90deg,{btn},#06b6d4) !important; }}
+    .stAlert {{ background-color: {card} !important; color: {txt} !important; border-radius: 10px !important; }}
+    .streamlit-expanderHeader {{ background-color: {card} !important; border-radius: 10px !important; }}
+    hr {{ border-color: {border} !important; }}
+
+    .ccard {{
+        background: {card}; border: 1px solid {border};
+        border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 0.8rem;
+    }}
+    .mono {{ font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }}
+    </style>
+    """, unsafe_allow_html=True)
+
+
+# ─────────────────────────────────────────────────────────────────────
+# SIDEBAR
+# ─────────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown("## ⚙️ Pengaturan")
+    tema = st.radio("🎨 Tema:", ["Dark", "Light"],
+                    index=0 if st.session_state.theme == "Dark" else 1,
+                    horizontal=True)
+    st.session_state.theme = tema
+    apply_theme()
+
+    st.markdown("---")
+    st.markdown("## 📚 Menu")
+    MENUS = ["🏠 Dashboard", "✅ To-Do List", "⏱️ Timer Belajar",
+             "🎵 Musik Fokus", "🧪 Simulasi Indikator", "🧮 Kalkulator pH"]
+    selected_menu = st.radio("", MENUS, label_visibility="collapsed")
+
+
+# ─────────────────────────────────────────────────────────────────────
+# ███  1. DASHBOARD
+# ─────────────────────────────────────────────────────────────────────
+if selected_menu == "🏠 Dashboard":
+    st.markdown("# 📚 Dashboard Belajar Kimia")
+    st.markdown("Selamat datang! Pilih menu di sidebar untuk memulai sesi belajar.")
+
+    c1, c2, c3, c4 = st.columns(4)
+    total   = len(st.session_state.tasks)
+    selesai = sum(1 for t in st.session_state.tasks if t["done"])
+    pending = total - selesai
+    persen  = int(selesai / total * 100) if total else 0
+
+    c1.metric("📝 Total Tugas",   total)
+    c2.metric("⏳ Tertunda",       pending)
+    c3.metric("✅ Selesai",        selesai)
+    c4.metric("📊 Progress",       f"{persen}%")
+
+    if total:
+        st.progress(persen / 100)
+
+    st.markdown("---")
+    st.info("💡 **Tip Pomodoro:** 25 menit belajar fokus → 5 menit istirahat. Ulangi 4 kali, lalu istirahat 15 menit.")
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown("""
+        <div class="ccard">
+          <b>✅ To-Do List</b><br><span class="mono">Catat & kelola tugas harian mu</span>
+        </div>
+        <div class="ccard">
+          <b>⏱️ Timer Belajar</b><br><span class="mono">Pomodoro timer interaktif</span>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_b:
+        st.markdown("""
+        <div class="ccard">
+          <b>🧪 Simulasi Indikator</b><br><span class="mono">Lihat perubahan warna larutan</span>
+        </div>
+        <div class="ccard">
+          <b>🧮 Kalkulator pH</b><br><span class="mono">Hitung pH dari konsentrasi</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+# ─────────────────────────────────────────────────────────────────────
+# ███  2. TO-DO LIST (FIXED WIDGET KEYS)
+# ─────────────────────────────────────────────────────────────────────
+elif selected_menu == "✅ To-Do List":
+    st.markdown("# ✅ To-Do List Harian")
+
+    ci1, ci2 = st.columns([5, 1])
+    with ci1:
+        # Gunakan session state untuk field input agar bisa di-reset dengan rapi
+        new_task = st.text_input("Tambah tugas:", key="new_task_input", placeholder="Contoh: Baca bab 3 Kimia Kelas XI")
+    with ci2:
+        st.write("")
+        if st.button("➕ Tambah", type="primary"):
+            if new_task.strip():
+                st.session_state.tasks.append({
+                    "id": str(uuid.uuid4()), # ID unik untuk mencegah error DuplicateWidget
+                    "name": new_task.strip(),
+                    "done": False,
+                    "ts": datetime.now().strftime("%H:%M")
+                })
+                # Reset kolom input
+                st.session_state["new_task_input"] = ""
+                safe_rerun()
+
+    st.markdown("---")
+    if not st.session_state.tasks:
+        st.warning("📭 Belum ada tugas. Tambahkan di atas!")
+    else:
+        total_t = len(st.session_state.tasks)
+        done_t  = sum(1 for t in st.session_state.tasks if t["done"])
+        st.progress(done_t / total_t, text=f"Progress: {done_t}/{total_t} selesai")
+        st.markdown("")
+
+        # Loop menggunakan unique ID
+        for task in st.session_state.tasks:
+            cc1, cc2, cc3 = st.columns([0.5, 7, 1])
+            with cc1:
+                # Membaca state checkbox secara langsung tanpa callback on_change yang rawan crash
+                is_checked = st.checkbox("", value=task["done"], key=f"chk_{task['id']}")
+                if is_checked != task["done"]:
+                    task["done"] = is_checked
+                    safe_rerun()
+            with cc2:
+                style = "~~" if task["done"] else "**"
+                end   = "~~ ✅" if task["done"] else "**"
+                st.markdown(f"{style}{task['name']}{end}")
+                st.caption(f"Ditambahkan pukul {task['ts']}")
+            with cc3:
+                if st.button("🗑️", key=f"del_{task['id']}"):
+                    st.session_state.tasks = [t for t in st.session_state.tasks if t["id"] != task["id"]]
+                    safe_rerun()
+            st.markdown("---")
+
+
+# ─────────────────────────────────────────────────────────────────────
+# ███  3. TIMER BELAJAR
+# ─────────────────────────────────────────────────────────────────────
+elif selected_menu == "⏱️ Timer Belajar":
+    st.markdown("# ⏱️ Timer Belajar — Teknik Pomodoro")
+
+    ct1, ct2 = st.columns(2)
+    with ct1:
+        st.markdown("### ⚙️ Pengaturan")
+        mode = st.selectbox("Mode:", ["🍅 25 menit – Belajar", "☕ 5 menit – Istirahat", "🛌 15 menit – Istirahat Panjang"])
+        default_map = {"🍅 25 menit – Belajar": 25*60, "☕ 5 menit – Istirahat": 5*60, "🛌 15 menit – Istirahat Panjang": 15*60}
+        default_time = default_map[mode]
+
+        if st.button("🔄 Reset Timer"):
+            st.session_state.time_left = default_time
+            st.session_state.timer_running = False
+            safe_rerun()
+
+        st.markdown("---")
+        ck1, ck2 = st.columns(2)
+        with ck1:
+            if st.button("▶️ Mulai", type="primary"):
+                if not st.session_state.timer_running:
+                    st.session_state.timer_running = True
+                    safe_rerun()
+        with ck2:
+            if st.button("⏹️ Stop"):
+                st.session_state.timer_running = False
+                safe_rerun()
+
+    with ct2:
+        menit = max(0, st.session_state.time_left) // 60
+        detik = max(0, st.session_state.time_left) % 60
+        wkt = f"{menit:02d}:{detik:02d}"
+
+        if menit <= 5:   clr, sts = "#ef4444", "🔴 Hampir Selesai!"
+        elif menit <= 10: clr, sts = "#f59e0b", "🟡 Tetap Fokus"
+        else:             clr, sts = "#22c55e", "🟢 Fokus Penuh"
+
+        st.markdown(f"""
+        <div style="text-align:center; padding:40px 20px; background:rgba(0,0,0,0.2);
+             border-radius:24px; border:2px solid {clr}33;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:5rem;
+               font-weight:700; color:{clr}; line-height:1; text-shadow:0 0 30px {clr}88;">{wkt}</div>
+          <div style="font-size:1.1rem; margin-top:1rem; font-weight:600;">{sts}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        pct = max(0.0, min(1.0, st.session_state.time_left / default_time))
+        st.progress(pct)
+
+    # Logika timer loop dipindahkan ke bawah agar tidak memblokir render UI
+    if st.session_state.timer_running:
+        if st.session_state.time_left > 0:
+            time.sleep(1)
+            st.session_state.time_left -= 1
+            safe_rerun()
+        else:
+            st.session_state.timer_running = False
+            st.balloons()
+            st.success("⏰ Waktu selesai! Saatnya istirahat 🎉")
+
+
+# ─────────────────────────────────────────────────────────────────────
+# ███  4. MUSIK FOKUS
+# ─────────────────────────────────────────────────────────────────────
+elif selected_menu == "🎵 Musik Fokus":
+    st.markdown("# 🎵 Musik Fokus")
+    st.markdown("Pilih musik latar untuk menemani sesi belajarmu.")
+
+    pilihan = st.selectbox("🎧 Pilih Trek:", list(MUSIK.keys()))
+    st.audio(MUSIK[pilihan], format="audio/mp3")
+
+    st.markdown("---")
+    st.markdown("""
+    <div class="ccard">
+      <b>💡 Tips Musik Belajar</b><br>
+      <span class="mono">
+      • Lo-Fi → cocok untuk membaca laporan praktikum<br>
+      • Ambient Nature → cocok untuk konsentrasi dalam<br>
+      • Piano → cocok untuk menghafal<br>
+      • Deep Focus → cocok untuk mengerjakan soal<br>
+      • Coffee Shop → cocok untuk brainstorming
+      </span>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# ─────────────────────────────────────────────────────────────────────
+# ███  5. SIMULASI INDIKATOR
+# ─────────────────────────────────────────────────────────────────────
+elif selected_menu == "🧪 Simulasi Indikator":
+    st.markdown("# 🧪 Simulasi Indikator Asam-Basa")
+
+    col_left, col_right = st.columns([5, 7])
+
+    with col_left:
+        st.markdown("### 🔬 Parameter Simulasi")
+
+        preset_names = [c["name"] for c in CHEMICALS]
+        pilihan_zat  = st.selectbox("Pilih Zat Kimia:", preset_names, index=0)
+        zat_data     = next(c for c in CHEMICALS if c["name"] == pilihan_zat)
+
+        pilihan_ind  = st.selectbox("Pilih Indikator:",
+                                    list(INDICATORS.keys()),
+                                    format_func=lambda k: INDICATORS[k]["name"])
+        ind_data     = INDICATORS[pilihan_ind]
+
+        st.markdown("---")
+        ph_sim = st.slider("🎚️ Atur pH Manual:", 0.0, 14.0,
+                           value=float(zat_data["pH"]), step=0.1)
+
+        kls, kls_clr = klasifikasi(ph_sim)
+        st.markdown(f"""
+        <div class="ccard" style="margin-top:1rem;">
+          <div class="mono">
+            <b>Rumus:</b> {zat_data['formula']}<br>
+            <b>Kelas:</b> <span style="color:{kls_clr};font-weight:700;">{kls}</span><br>
+            <b>Ionisasi:</b> {zat_data['dis']}<br>
+            <b>Kategori:</b> {zat_data['cat']}<br>
+            <b>Keterangan:</b> {zat_data['desc']}
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_right:
+        st.markdown("### 🔮 Beaker Reaktif")
+
+        liq_color  = warna_indikator(ph_sim, ind_data)
+        liq_label  = label_indikator(ph_sim, ind_data)
+        H_conc     = 10 ** (-ph_sim)
+        OH_conc    = 10 ** (-(14 - ph_sim))
+        level_px   = int(ph_sim * 7) + 50
+
+        st.markdown("""
+        <style>
+        @keyframes bubble {
+          0%   { transform: translateY(0);    opacity: 0.6; }
+          100% { transform: translateY(-40px); opacity: 0;   }
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        shadow_box  = f"inset 0 0 20px rgba(0,0,0,0.3), 0 0 20px {liq_color}44"
+        text_shadow = f"0 0 20px {liq_color}99"
+
+        beaker_html = (
+            "<div style='display:flex;flex-direction:column;align-items:center;gap:16px;'>"
+            "<div style='position:relative;width:180px;height:220px;'>"
+            "<div style='position:absolute;top:0;left:50%;transform:translateX(-50%);"
+            "width:164px;height:12px;"
+            "border:3px solid rgba(200,200,255,0.35);border-radius:4px;'></div>"
+            f"<div style='position:absolute;bottom:0;left:50%;transform:translateX(-50%);"
+            f"width:150px;height:200px;"
+            f"border:3px solid rgba(200,200,255,0.35);border-top:none;"
+            f"border-radius:0 0 22px 22px;overflow:hidden;"
+            f"background:rgba(255,255,255,0.03);"
+            f"box-shadow:{shadow_box};'>"
+            f"<div style='position:absolute;bottom:0;left:0;right:0;"
+            f"height:{level_px}px;"
+            f"background:{liq_color};opacity:0.85;"
+            f"border-radius:0 0 18px 18px;"
+            f"box-shadow:inset 0 6px 12px rgba(255,255,255,0.2);'>"
+            "<div style='position:absolute;bottom:10px;left:25%;width:6px;height:6px;"
+            "background:rgba(255,255,255,0.5);border-radius:50%;"
+            "animation:bubble 2s infinite;'></div>"
+            "<div style='position:absolute;bottom:20px;left:60%;width:4px;height:4px;"
+            "background:rgba(255,255,255,0.4);border-radius:50%;"
+            "animation:bubble 2.5s infinite 0.5s;'></div>"
+            "</div>"
+            "<div style='position:absolute;right:8px;top:15px;height:155px;"
+            "display:flex;flex-direction:column;justify-content:space-between;"
+            "font-family:monospace;font-size:8px;color:rgba(200,220,255,0.6);'>"
+            "<span>150ml</span><span>100ml</span><span>50ml</span>"
+            "</div>"
+            "</div>"
+            "</div>"
+            "<div style='text-align:# =====================================================================
+# 📚 DASHBOARD BELAJAR - KIMIA ASAM BASA
 # Versi: 2.0 (Fixed + Enhanced + Music Player)
 # =====================================================================
 
