@@ -900,7 +900,6 @@ elif selected_menu == "🧮 Kalkulator pH":
                     
                 pH_eq = 7 + 0.5 * (-math.log10(Ka)) - 0.5 * (-math.log10(Kb))
                 rumus_ph = "Hidrolisis Total: pH = 7 + ½(pKa - pKb)"
-        st.dataframe(pd.DataFrame(records), use_container_width=True, hide_index=True)
 
 
 # ─────────────────────────────────────────────────────────────────────
