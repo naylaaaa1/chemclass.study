@@ -779,11 +779,12 @@ elif selected_menu == "🧮 Kalkulator pH":
                                 ["🟢 Buffer Asam (Asam Lemah + Basa Konjugasi)", "🔵 Buffer Basa (Basa Lemah + Asam Konjugasi)"], 
                                 horizontal=True)
 
-        if jenis_buffer == "🟢 Buffer Asam":
+        if "Asam" in jenis_buffer:
             st.markdown("""
             <div class="ccard">
               <b>Persamaan Henderson-Hasselbalch (Sistem Asam):</b><br>
-              <span class="mono" style="font-size:1.1rem;">pH = pKa + log ( [A⁻] / [HA] )</span>
+              <span class="mono" style="font-size:1.1rem;">pH = pKa + log ( [A⁻] / [HA] )</span><br><br>
+              Gunakan untuk menghitung pH larutan penyangga yang terdiri dari <b>asam lemah</b> dan garamnya.
             </div>
             """, unsafe_allow_html=True)
             
