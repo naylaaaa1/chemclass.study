@@ -437,77 +437,83 @@ elif selected_menu == "🧪 Simulasi Indikator":
         liq_label  = label_indikator(ph_sim, ind_data)
         H_conc     = 10 ** (-ph_sim)
         OH_conc    = 10 ** (-(14 - ph_sim))
-        level_px   = int(ph_sim * 7) + 50    # ketinggian cairan 50–148 px
+        level_px   = int(ph_sim * 7) + 50  # ketinggian cairan 50-148 px
 
-        st.markdown(f"""
-        <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
-
-          <!-- Beaker -->
-          <div style="position:relative; width:160px; height:200px;">
-
-            <!-- Tabung beaker -->
-            <div style="
-              position:absolute; bottom:0; left:50%; transform:translateX(-50%);
-              width:140px; height:180px;
-              border: 3px solid rgba(200,200,255,0.35);
-              border-top: none;
-              border-radius: 0 0 22px 22px;
-              overflow: hidden;
-              background: rgba(255,255,255,0.03);
-              box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 0 20px {liq_color}44;
-            ">
-              <!-- Cairan -->
-              <div style="
-                position:absolute; bottom:0; left:0; right:0;
-                height:{level_px}px;
-                background: {liq_color};
-                opacity: 0.85;
-                border-radius: 0 0 18px 18px;
-                transition: height 0.5s ease, background 0.5s ease;
-                box-shadow: inset 0 6px 12px rgba(255,255,255,0.2);
-              ">
-                <!-- Gelembung animasi -->
-                <div style="position:absolute;bottom:10px;left:25%;width:6px;height:6px;
-                  background:rgba(255,255,255,0.5);border-radius:50%;
-                  animation:bubble 2s infinite;"></div>
-                <div style="position:absolute;bottom:20px;left:60%;width:4px;height:4px;
-                  background:rgba(255,255,255,0.4);border-radius:50%;
-                  animation:bubble 2.5s infinite 0.5s;"></div>
-              </div>
-              <!-- Skala ukur -->
-              <div style="position:absolute;right:8px;top:15px;height:140px;
-                display:flex;flex-direction:column;justify-content:space-between;
-                font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(200,220,255,0.6);">
-                <span>150ml</span><span>100ml</span><span>50ml</span>
-              </div>
-            </div>
-
-            <!-- Mulut beaker -->
-            <div style="
-              position:absolute; top:0; left:50%; transform:translateX(-50%);
-              width:152px; height:12px;
-              border: 3px solid rgba(200,200,255,0.35);
-              border-radius: 4px;
-            "></div>
-          </div>
-
-          <!-- Nilai pH besar -->
-          <div style="text-align:center;">
-            <div style="font-family:'JetBrains Mono',monospace; font-size:3.2rem;
-              font-weight:700; color:{liq_color}; text-shadow:0 0 20px {liq_color}99;
-              line-height:1;">pH {ph_sim:.1f}</div>
-            <div style="font-size:0.9rem; font-weight:600; margin-top:4px;
-              color:{liq_color}; opacity:0.85;">{liq_label}</div>
-          </div>
-        </div>
-
+        # Inject animasi bubble via CSS terpisah
+        st.markdown("""
         <style>
-        @keyframes bubble {{
-          0%   {{ transform:translateY(0);   opacity:0.6; }}
-          100% {{ transform:translateY(-40px); opacity:0; }}
-        }}
+        @keyframes bubble {
+          0%   { transform: translateY(0);    opacity: 0.6; }
+          100% { transform: translateY(-40px); opacity: 0;   }
+        }
         </style>
         """, unsafe_allow_html=True)
+
+        # Bangun HTML beaker tanpa komentar HTML agar tidak mengacaukan render
+        shadow_box  = f"inset 0 0 20px rgba(0,0,0,0.3), 0 0 20px {liq_color}44"
+        text_shadow = f"0 0 20px {liq_color}99"
+
+        beaker_html = (
+            "<div style='display:flex;flex-direction:column;align-items:center;gap:16px;'>"
+
+            # -- wrapper beaker
+            "<div style='position:relative;width:180px;height:220px;'>"
+
+            # -- bibir atas beaker
+            "<div style='position:absolute;top:0;left:50%;transform:translateX(-50%);"
+            "width:164px;height:12px;"
+            "border:3px solid rgba(200,200,255,0.35);border-radius:4px;'></div>"
+
+            # -- tabung beaker
+            f"<div style='position:absolute;bottom:0;left:50%;transform:translateX(-50%);"
+            f"width:150px;height:200px;"
+            f"border:3px solid rgba(200,200,255,0.35);border-top:none;"
+            f"border-radius:0 0 22px 22px;overflow:hidden;"
+            f"background:rgba(255,255,255,0.03);"
+            f"box-shadow:{shadow_box};'>"
+
+            # -- cairan
+            f"<div style='position:absolute;bottom:0;left:0;right:0;"
+            f"height:{level_px}px;"
+            f"background:{liq_color};opacity:0.85;"
+            f"border-radius:0 0 18px 18px;"
+            f"box-shadow:inset 0 6px 12px rgba(255,255,255,0.2);'>"
+
+            # -- gelembung 1
+            "<div style='position:absolute;bottom:10px;left:25%;width:6px;height:6px;"
+            "background:rgba(255,255,255,0.5);border-radius:50%;"
+            "animation:bubble 2s infinite;'></div>"
+
+            # -- gelembung 2
+            "<div style='position:absolute;bottom:20px;left:60%;width:4px;height:4px;"
+            "background:rgba(255,255,255,0.4);border-radius:50%;"
+            "animation:bubble 2.5s infinite 0.5s;'></div>"
+
+            "</div>"  # tutup cairan
+
+            # -- skala ukur
+            "<div style='position:absolute;right:8px;top:15px;height:155px;"
+            "display:flex;flex-direction:column;justify-content:space-between;"
+            "font-family:monospace;font-size:8px;color:rgba(200,220,255,0.6);'>"
+            "<span>150ml</span><span>100ml</span><span>50ml</span>"
+            "</div>"
+
+            "</div>"  # tutup tabung beaker
+            "</div>"  # tutup wrapper beaker
+
+            # -- label pH besar
+            "<div style='text-align:center;'>"
+            f"<div style='font-family:monospace;font-size:3.2rem;font-weight:700;"
+            f"color:{liq_color};text-shadow:{text_shadow};line-height:1;'>"
+            f"pH {ph_sim:.1f}</div>"
+            f"<div style='font-size:0.9rem;font-weight:600;margin-top:4px;"
+            f"color:{liq_color};opacity:0.85;'>{liq_label}</div>"
+            "</div>"
+
+            "</div>"  # tutup flex container
+        )
+
+        st.markdown(beaker_html, unsafe_allow_html=True)
 
         st.markdown("")
 
