@@ -177,7 +177,7 @@ DATABASE_LARUTAN = {
     "Stronsium Hidroksida (Sr(OH)₂) - Basa Kuat (Valensi 2)": {"jenis": "basa_kuat", "valensi": 2},
 
     # --- ASAM LEMAH ---
-    "Asam Asetat (CH₃COOH) Ka=1.8×10⁻⁵": {"jenis": "asam_lemah", "K": 1.8e-5},
+    "Asam Asetat (CH₃COOH) - Asam Lemah (Ka=1.8×10⁻⁵)": {"jenis": "asam_lemah", "K": 1.8e-5},
     "Asam Format (HCOOH) Ka=1.8×10⁻⁴": {"jenis": "asam_lemah", "K": 1.8e-4},
     "Asam Sianida (HCN) Ka=4.9×10⁻¹⁰": {"jenis": "asam_lemah", "K": 4.9e-10},
     "Asam Fluorida (HF) Ka=6.8×10⁻⁴": {"jenis": "asam_lemah", "K": 6.8e-4},
