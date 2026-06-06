@@ -776,7 +776,7 @@ elif selected_menu == "🧮 Kalkulator pH":
     with tab2:
         # Pilihan sistem
         jenis_buffer = st.radio("Pilih Sistem Penyangga:", 
-                                ["🟢 Buffer Asam", "🔵 Buffer Basa"], 
+                                ["🟢 Buffer Asam (Asam Lemah+Basa Konjugasi)", "🔵 Buffer Basa (Basa Lemah + Asam Konjugasi)"], 
                                 horizontal=True)
 
         if jenis_buffer == "🟢 Buffer Asam":
