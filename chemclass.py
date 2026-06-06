@@ -774,86 +774,56 @@ elif selected_menu == "🧮 Kalkulator pH":
 
     # ── Tab 2: Buffer ────────────────────────────────────────────────
     with tab2:
-        # Toggle untuk memilih jenis buffer
+        # Pilihan sistem
         jenis_buffer = st.radio("Pilih Sistem Penyangga:", 
-                                ["🟢 Buffer Asam (Asam Lemah + Basa Konjugasi)", 
-                                 "🔵 Buffer Basa (Basa Lemah + Asam Konjugasi)"], 
+                                ["🟢 Buffer Asam", "🔵 Buffer Basa"], 
                                 horizontal=True)
 
-        if "Asam" in jenis_buffer:
+        if jenis_buffer == "🟢 Buffer Asam":
             st.markdown("""
             <div class="ccard">
               <b>Persamaan Henderson-Hasselbalch (Sistem Asam):</b><br>
-              <span class="mono" style="font-size:1.1rem;">pH = pKa + log ( [A⁻] / [HA] )</span><br><br>
-              Gunakan untuk menghitung pH larutan penyangga yang terdiri dari <b>asam lemah</b> dan garamnya.
+              <span class="mono" style="font-size:1.1rem;">pH = pKa + log ( [A⁻] / [HA] )</span>
             </div>
             """, unsafe_allow_html=True)
             
-            b1, b2, b3 = st.columns(3)
-            with b1:
-                pK_val = st.number_input("pKa Asam Lemah:", value=4.74, step=0.01, format="%.2f", help="Contoh: Asam Asetat (CH₃COOH) = 4.74")
-            with b2:
-                c_lemah = st.number_input("[HA] (mol/L):", value=0.10, step=0.01, min_value=0.001, format="%.3f")
-            with b3:
-                c_konjugasi = st.number_input("[A⁻] (mol/L):", value=0.10, step=0.01, min_value=0.001, format="%.3f")
+            c1, c2, c3 = st.columns(3)
+            with c1: pK = st.number_input("pKa Asam:", value=4.74, step=0.01)
+            with c2: c_asam = st.number_input("[HA] (mol/L):", value=0.10, step=0.01)
+            with c3: c_garam = st.number_input("[A⁻] (mol/L):", value=0.10, step=0.01)
+            
+            rasio = c_garam / c_asam
+            ph_buf = round(pK + math.log10(rasio), 2)
+            rumus_display = f"pH = {pK:.2f} + log({c_garam:.4f} / {c_asam:.4f}) = {pK:.2f} + {math.log10(rasio):.4f}"
 
-            rasio = c_konjugasi / c_lemah
-            nilai_log = math.log10(rasio)
-            ph_buf = round(max(0, min(14, pK_val + nilai_log)), 2)
-            rumus_teks = f"log([A⁻]/[HA]) = log({rasio:.4f}) = {nilai_log:.4f}"
-
-        else:
+        else: # LOGIKA BUFFER BASA
             st.markdown("""
             <div class="ccard">
               <b>Persamaan Henderson-Hasselbalch (Sistem Basa):</b><br>
-              <span class="mono" style="font-size:1.1rem;">pOH = pKb + log ( [BH⁺] / [B] )</span> &nbsp; | &nbsp; <span class="mono" style="font-size:1.1rem;">pH = 14 - pOH</span><br><br>
-              Gunakan untuk menghitung pH larutan penyangga yang terdiri dari <b>basa lemah</b> (seperti NH₃) dan asam konjugasinya (seperti NH₄⁺).
+              <span class="mono" style="font-size:1.1rem;">pOH = pKb + log ( [BH⁺] / [B] )</span><br>
+              <span class="mono" style="font-size:1.1rem;">pH = 14 - pOH</span>
             </div>
             """, unsafe_allow_html=True)
+            
+            c1, c2, c3 = st.columns(3)
+            with c1: pK = st.number_input("pKb Basa:", value=4.75, step=0.01)
+            with c2: c_basa = st.number_input("[B] (mol/L):", value=0.10, step=0.01)
+            with c3: c_konj = st.number_input("[BH⁺] (mol/L):", value=0.10, step=0.01)
+            
+            rasio = c_konj / c_basa
+            poh_buf = pK + math.log10(rasio)
+            ph_buf = round(14 - poh_buf, 2)
+            rumus_display = f"pOH = {pK:.2f} + log({c_konj:.4f} / {c_basa:.4f}) = {poh_buf:.4f} <br> pH = 14 - {poh_buf:.4f}"
 
-            b1, b2, b3 = st.columns(3)
-            with b1:
-                pK_val = st.number_input("pKb Basa Lemah:", value=4.75, step=0.01, format="%.2f", help="Contoh: Amonia (NH₃) = 4.75")
-            with b2:
-                c_lemah = st.number_input("[B] (mol/L):", value=0.10, step=0.01, min_value=0.001, format="%.3f")
-            with b3:
-                c_konjugasi = st.number_input("[BH⁺] (mol/L):", value=0.10, step=0.01, min_value=0.001, format="%.3f")
-
-            rasio = c_konjugasi / c_lemah
-            nilai_log = math.log10(rasio)
-            poh_buf = pK_val + nilai_log
-            ph_buf = round(max(0, min(14, 14 - poh_buf)), 2)
-            rumus_teks = f"log([BH⁺]/[B]) = log({rasio:.4f}) = {nilai_log:.4f}<br>pOH = {pK_val:.2f} + {nilai_log:.4f} = {poh_buf:.2f}"
-
-        # Visualisasi hasil (Berlaku untuk keduanya)
-        kls3, kls3_clr = klasifikasi(ph_buf)
-
+        # Tampilan Hasil pH
+        kls, kls_clr = klasifikasi(ph_buf)
         st.markdown(f"""
-        <div style="background:rgba(0,0,0,0.2); border-radius:16px; padding:1.5rem;
-          text-align:center; border:2px solid {kls3_clr}44; margin-top:1rem;">
-          <div class="mono" style="color:#94a3b8; margin-bottom:8px;">
-            {rumus_teks}
-          </div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700;
-            color:{kls3_clr}; text-shadow:0 0 15px {kls3_clr}88;">pH = {ph_buf:.2f}</div>
-          <div style="color:{kls3_clr}; font-weight:700; margin-top:4px;">{kls3}</div>
+        <div style="background:rgba(0,0,0,0.2); border-radius:16px; padding:1.5rem; text-align:center; border:2px solid {kls_clr}44; margin-top:1rem;">
+          <div class="mono" style="color:#94a3b8;">{rumus_display}</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; color:{kls_clr};">pH = {ph_buf:.2f}</div>
+          <div style="color:{kls_clr}; font-weight:700;">{kls}</div>
         </div>
         """, unsafe_allow_html=True)
-
-        # Tabel sensitivitas buffer
-        st.markdown("---")
-        st.markdown("**📈 Sensitivitas pH terhadap rasio Konsentrasi:**")
-        ratios = [0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 100.0]
-        
-        # Penyesuaian tabel otomatis sesuai jenis buffer yang dipilih
-        if "Asam" in jenis_buffer:
-            ph_vals = [round(pK_val + math.log10(r), 2) for r in ratios]
-            tabel_buf = pd.DataFrame({"Rasio [A⁻]/[HA]": ratios, "pH": ph_vals})
-        else:
-            ph_vals = [round(14 - (pK_val + math.log10(r)), 2) for r in ratios]
-            tabel_buf = pd.DataFrame({"Rasio [BH⁺]/[B]": ratios, "pH": ph_vals})
-            
-        st.dataframe(tabel_buf, use_container_width=True, hide_index=True)
 
     # ── Tab 3: TITRASI POLIPROTIK & HIDROLISIS ───────────────────────
     with tab3:
